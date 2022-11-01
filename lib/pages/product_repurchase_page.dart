@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 
 class ProductRepurchasePage extends StatelessWidget {
+  static const String routeName = '/repurchase';
   const ProductRepurchasePage({Key? key}) : super(key: key);
-  static const String routeName= '/ProductRepurchasePage';
+
   @override
   Widget build(BuildContext context) {
-    return Container();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Re-Purchase'),
+      ),
+    );
   }
 }

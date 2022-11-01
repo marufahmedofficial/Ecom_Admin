@@ -1,3 +1,9 @@
+const String collectionCategory = 'Categories';
+
+const String categoryFieldId = 'categoryId';
+const String categoryFieldName = 'categoryName';
+const String categoryFieldProductCount = 'productCount';
+
 class CategoryModel {
   String? categoryId;
   String categoryName;
@@ -8,4 +14,18 @@ class CategoryModel {
     required this.categoryName,
     this.productCount = 0,
   });
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      categoryFieldId: categoryId,
+      categoryFieldName: categoryName,
+      categoryFieldProductCount: productCount,
+    };
+  }
+
+  factory CategoryModel.fromMap(Map<String, dynamic> map) => CategoryModel(
+        categoryId: map[categoryFieldId],
+        categoryName: map[categoryFieldName],
+        productCount: map[categoryFieldProductCount],
+      );
 }
