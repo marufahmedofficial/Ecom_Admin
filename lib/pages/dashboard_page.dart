@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../auth/authservice.dart';
+import '../customwidgets/dashboard_item_view.dart';
+import '../models/dashbord_model.dart';
 import 'launcher_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -17,12 +19,20 @@ class DashboardPage extends StatelessWidget {
           IconButton(
             onPressed: () {
               AuthService.logout().then((value) =>
-                  Navigator.pushReplacementNamed(
-                      context, LauncherPage.routeName));
+                  Navigator.pushReplacementNamed(context, LauncherPage.routeName));
             },
             icon: const Icon(Icons.logout),
           ),
         ],
+      ),
+      body: GridView.builder(
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          //childAspectRatio: 1.0,
+        ),
+        itemCount: dashboardModelList.length,
+        itemBuilder: (context, index) =>
+            DashboardItemView(model: dashboardModelList[index],),
       ),
     );
   }

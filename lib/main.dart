@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled/pages/add_product_page.dart';
 import 'package:untitled/pages/category.dart';
 import 'package:untitled/pages/dashboard_page.dart';
@@ -13,10 +14,16 @@ import 'package:untitled/pages/settings_page.dart';
 import 'package:untitled/pages/user_list_page.dart';
 import 'package:untitled/pages/view_product_page.dart';
 
+import 'providers/product_provider.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(const MyApp());
+  runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ProductProvider()),
+      ],
+      child: const MyApp()));
 }
 
 class MyApp extends StatelessWidget {
