@@ -1,3 +1,4 @@
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -36,9 +37,10 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: const InputDecoration(
                       filled: true,
                       prefixIcon: Icon(Icons.email),
-                      labelText: 'Email Address'),
+                      labelText: 'Email Address'
+                  ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if(value == null || value.isEmpty) {
                       return 'Provide a valid email address';
                     }
                     return null;
@@ -53,9 +55,10 @@ class _LoginPageState extends State<LoginPage> {
                   decoration: const InputDecoration(
                       filled: true,
                       prefixIcon: Icon(Icons.lock),
-                      labelText: 'Password(at least 6 characters)'),
+                      labelText: 'Password(at least 6 characters)'
+                  ),
                   validator: (value) {
-                    if (value == null || value.isEmpty) {
+                    if(value == null || value.isEmpty) {
                       return 'Provide a valid password';
                     }
                     return null;
@@ -68,10 +71,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  _errMsg,
-                  style: const TextStyle(fontSize: 18, color: Colors.red),
-                ),
+                child: Text(_errMsg, style: const TextStyle(fontSize: 18, color: Colors.red),),
               ),
             ],
           ),
@@ -88,16 +88,24 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _authenticate() async {
-    if (_formKey.currentState!.validate()) {
+    if(_formKey.currentState!.validate()) {
       EasyLoading.show(status: 'Please wait', dismissOnTap: false);
       final email = _emailController.text;
       final password = _passwordController.text;
       try {
         final status = await AuthService.login(email, password);
         EasyLoading.dismiss();
-        if (mounted) {
-          Navigator.pushReplacementNamed(context, LauncherPage.routeName);
+        if(status) {
+          if(mounted) {
+            Navigator.pushReplacementNamed(context, LauncherPage.routeName);
+          }
+        } else {
+          await AuthService.logout();
+          setState(() {
+            _errMsg = 'This email address is not registered as Admin.';
+          });
         }
+
       } on FirebaseAuthException catch (error) {
         EasyLoading.dismiss();
         setState(() {
