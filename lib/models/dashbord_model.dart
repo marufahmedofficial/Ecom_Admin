@@ -1,5 +1,5 @@
 import '../pages/add_product_page.dart';
-import '../pages/category.dart';
+import '../pages/category_page.dart';
 import '../pages/order_page.dart';
 import '../pages/report_page.dart';
 import '../pages/settings_page.dart';
