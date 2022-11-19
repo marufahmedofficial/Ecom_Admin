@@ -4,7 +4,8 @@ const String categoryFieldId = 'categoryId';
 const String categoryFieldName = 'categoryName';
 const String categoryFieldProductCount = 'productCount';
 
-class CategoryModel {
+class CategoryModel{
+
   String? categoryId;
   String categoryName;
   num productCount;
@@ -12,20 +13,20 @@ class CategoryModel {
   CategoryModel({
     this.categoryId,
     required this.categoryName,
-    this.productCount = 0,
+    this.productCount=0,
   });
 
-  Map<String, dynamic> toMap() {
-    return <String, dynamic>{
-      categoryFieldId: categoryId,
-      categoryFieldName: categoryName,
-      categoryFieldProductCount: productCount,
+  Map<String,dynamic>toMap(){
+    return <String,dynamic>{
+      categoryFieldId:categoryId,
+      categoryFieldName:categoryName,
+      categoryFieldProductCount:productCount,
     };
   }
 
-  factory CategoryModel.fromMap(Map<String, dynamic> map) => CategoryModel(
-        categoryId: map[categoryFieldId],
-        categoryName: map[categoryFieldName],
-        productCount: map[categoryFieldProductCount],
-      );
+  factory CategoryModel.fromMap(Map<String,dynamic>map)=>CategoryModel(
+    categoryId: map[categoryFieldId],
+    categoryName: map[categoryFieldName],
+    productCount: map[categoryFieldProductCount],
+  );
 }

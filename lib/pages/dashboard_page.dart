@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../auth/authservice.dart';
 import '../customwidgets/dashboard_item_view.dart';
 import '../models/dashbord_model.dart';
+import '../providers/product_provider.dart';
 import 'launcher_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -12,6 +14,7 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Provider.of<ProductProvider>(context, listen: false).getAllCategories();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),

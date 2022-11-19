@@ -29,6 +29,22 @@ class CategoryPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Categories'),
       ),
+      body: Consumer<ProductProvider>(
+        builder: (context, provider, child) {
+          return provider.categoryList.isEmpty ?
+          const Center(child: Text('No category found'),) :
+          ListView.builder(
+            itemCount: provider.categoryList.length,
+            itemBuilder: (context, index) {
+              final catModel = provider.categoryList[index];
+              return ListTile(
+                title: Text(catModel.categoryName),
+                trailing: Text('Total: ${catModel.productCount}'),
+              );
+            },
+          );
+        },
+      ),
     );
   }
 }
