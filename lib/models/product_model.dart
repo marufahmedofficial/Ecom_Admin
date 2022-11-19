@@ -26,7 +26,7 @@ class ProductModel {
   num avgRating;
   num productDiscount;
   String thumbnailImageUrl;
-  List<String>? additionalImages;
+  List<String> additionalImages;
   bool available;
   bool featured;
 
@@ -41,7 +41,7 @@ class ProductModel {
         this.productDiscount = 0,
         this.avgRating = 0.0,
         required this.thumbnailImageUrl,
-        this.additionalImages,
+        required this.additionalImages,
         this.available = true,
         this.featured = false});
 
@@ -74,8 +74,8 @@ class ProductModel {
     avgRating: map[productFieldAvgRating],
     productDiscount: map[productFieldDiscount],
     thumbnailImageUrl: map[productFieldThumbnail],
-    additionalImages: map[productFieldImages] != null ?
-    map[productFieldImages] as List<String> : null,
+    additionalImages: map[productFieldImages] == null ? ['', '', ''] :
+    (map[productFieldImages] as List).map((e) => e as String).toList(),
     available: map[productFieldAvailable],
     featured: map[productFieldFeatured],
   );

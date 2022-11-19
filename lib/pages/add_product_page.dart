@@ -339,6 +339,7 @@ class _AddProductPageState extends State<AddProductPage> {
           productDiscount: num.parse(_discountController.text),
           salePrice: num.parse(_salePriceController.text),
           stock: num.parse(_quantityController.text),
+          additionalImages: ['', '', ''],
           thumbnailImageUrl: downloadUrl,
         );
         final purchaseModel = PurchaseModel(
