@@ -1,8 +1,9 @@
-const String collectionCategory = 'Categories';
+const String collectionCategory='Categories';
 
-const String categoryFieldId = 'categoryId';
-const String categoryFieldName = 'categoryName';
-const String categoryFieldProductCount = 'productCount';
+const String categoryFieldId='categoryId';
+const String categoryFieldName='categoryName';
+const String categoryFieldProductCount='productCount';
+
 
 class CategoryModel{
 
