@@ -44,4 +44,28 @@ class DbHelper {
           .where('$productFieldCategory.$categoryFieldId', isEqualTo: categoryModel.categoryId)
           .snapshots();
 
+  static Stream<QuerySnapshot<Map<String, dynamic>>> getAllPurchases() =>
+      _db.collection(collectionPurchase).snapshots();
+
+  static Future<void> updateProductField(String productId, Map<String, dynamic> map) {
+    return _db.collection(collectionProduct)
+        .doc(productId)
+        .update(map);
+  }
+
+  static Future<void> repurchase(PurchaseModel purchaseModel, ProductModel productModel) async {
+    final wb = _db.batch();
+    final purDoc = _db.collection(collectionPurchase).doc();
+    purchaseModel.purchaseId = purDoc.id;
+    wb.set(purDoc, purchaseModel.toMap());
+    final proDoc = _db.collection(collectionProduct).doc(productModel.productId);
+    wb.update(proDoc, {productFieldStock : (productModel.stock + purchaseModel.purchaseQuantity)});
+    final snapshot = await _db.collection(collectionCategory)
+        .doc(productModel.category.categoryId).get();
+    final prevCount = snapshot.data()![categoryFieldProductCount];
+    final catDoc = _db.collection(collectionCategory).doc(productModel.category.categoryId);
+    wb.update(catDoc, {categoryFieldProductCount : (prevCount + purchaseModel.purchaseQuantity)});
+    return wb.commit();
+  }
+
 }

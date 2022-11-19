@@ -12,6 +12,7 @@ import '../models/purchase_model.dart';
 class ProductProvider extends ChangeNotifier {
   List<CategoryModel> categoryList = [];
   List<ProductModel> productList = [];
+  List<PurchaseModel> purchaseList = [];
   Future<void> addNewCategory(String category) {
     final categoryModel = CategoryModel(categoryName: category);
     return DbHelper.addCategory(categoryModel);
@@ -34,6 +35,14 @@ class ProductProvider extends ChangeNotifier {
     DbHelper.getAllProducts().listen((snapshot) {
       productList = List.generate(snapshot.docs.length, (index) =>
           ProductModel.fromMap(snapshot.docs[index].data()));
+      notifyListeners();
+    });
+  }
+
+  getAllPurchase() {
+    DbHelper.getAllPurchases().listen((snapshot) {
+      purchaseList = List.generate(snapshot.docs.length, (index) =>
+          PurchaseModel.fromMap(snapshot.docs[index].data()));
       notifyListeners();
     });
   }
@@ -61,5 +70,19 @@ class ProductProvider extends ChangeNotifier {
 
   Future<void> deleteImage(String downloadUrl) {
     return FirebaseStorage.instance.refFromURL(downloadUrl).delete();
+  }
+
+  Future<void> repurchase(PurchaseModel purchaseModel, ProductModel productModel) {
+    return DbHelper.repurchase(purchaseModel, productModel);
+  }
+
+  Future<void> updateProductField(String productId, String field, dynamic value) {
+    return DbHelper.updateProductField(productId, {field : value});
+  }
+
+  List<PurchaseModel> getPurchaseByProductId(String productId) {
+    List<PurchaseModel> list = [];
+    list = purchaseList.where((model) => model.productId == productId).toList();
+    return list;
   }
 }
