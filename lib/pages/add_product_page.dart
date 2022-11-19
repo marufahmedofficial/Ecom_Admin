@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -8,6 +9,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 import '../models/category_model.dart';
+import '../models/date_model.dart';
+import '../models/product_model.dart';
+import '../models/purchase_model.dart';
 import '../providers/product_provider.dart';
 import '../utils/helper_functions.dart';
 
@@ -21,6 +25,7 @@ class AddProductPage extends StatefulWidget {
 }
 
 class _AddProductPageState extends State<AddProductPage> {
+  late ProductProvider _productProvider;
   final _nameController = TextEditingController();
   final _shortDescriptionController = TextEditingController();
   final _longDescriptionController = TextEditingController();
@@ -29,7 +34,7 @@ class _AddProductPageState extends State<AddProductPage> {
   final _discountController = TextEditingController();
   final _quantityController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
-  String? thumbnailImageUrl;
+  String? thumbnailImageLocalPath;
   CategoryModel? categoryModel;
   DateTime? purchaseDate;
   late StreamSubscription<ConnectivityResult> subscription;
@@ -52,10 +57,22 @@ class _AddProductPageState extends State<AddProductPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    _productProvider = Provider.of<ProductProvider>(context, listen: false);
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Add Product'),
+        actions: [
+          IconButton(
+            onPressed: _saveProduct,
+            icon: const Icon(Icons.done),
+          )
+        ],
       ),
       body: Form(
         key: _formKey,
@@ -70,27 +87,61 @@ class _AddProductPageState extends State<AddProductPage> {
                   style: TextStyle(color: Colors.white),
                 ),
               ),
-            Consumer<ProductProvider>(
-              builder: (context, provider, child) => DropdownButtonFormField<CategoryModel>(
-                hint: const Text('Select Category'),
-                value: categoryModel,
-                isExpanded: true,
-                validator: (value) {
-                  if(value == null) {
-                    return 'Please select a category';
-                  }
-                  return null;
-                },
-                items: provider.categoryList.map((catModel) =>
-                    DropdownMenuItem(
-                        value: catModel,
-                        child: Text(catModel.categoryName))).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    categoryModel = value;
-                  });
-                },
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Card(
+                      child: thumbnailImageLocalPath == null ? const Icon(Icons.photo, size: 100,) :
+                      Image.file(File(thumbnailImageLocalPath!), width: 100, height: 100, fit: BoxFit.cover,),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        TextButton.icon(
+                          onPressed: () {
+                            _getImage(ImageSource.camera);
+                          },
+                          icon: const Icon(Icons.camera),
+                          label: const Text('Open Camera'),
+                        ),
+                        TextButton.icon(
+                          onPressed: () {
+                            _getImage(ImageSource.gallery);
+                          },
+                          icon: const Icon(Icons.photo_album),
+                          label: const Text('Open Gallery'),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
               ),
+            ),
+            Consumer<ProductProvider>(
+              builder: (context, provider, child) =>
+                  DropdownButtonFormField<CategoryModel>(
+                    hint: const Text('Select Category'),
+                    value: categoryModel,
+                    isExpanded: true,
+                    validator: (value) {
+                      if(value == null) {
+                        return 'Please select a category';
+                      }
+                      return null;
+                    },
+                    items: provider.categoryList.map((catModel) =>
+                        DropdownMenuItem(
+                            value: catModel,
+                            child: Text(catModel.categoryName))).toList(),
+                    onChanged: (value) {
+                      setState(() {
+                        categoryModel = value;
+                      });
+                    },
+                  ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -234,39 +285,7 @@ class _AddProductPageState extends State<AddProductPage> {
                 ),
               ),
             ),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Card(
-                      child: thumbnailImageUrl == null ? const Icon(Icons.photo, size: 100,) :
-                      Image.file(File(thumbnailImageUrl!), width: 100, height: 100, fit: BoxFit.cover,),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        TextButton.icon(
-                          onPressed: () {
-                            _getImage(ImageSource.camera);
-                          },
-                          icon: const Icon(Icons.camera),
-                          label: const Text('Open Camera'),
-                        ),
-                        TextButton.icon(
-                          onPressed: () {
-                            _getImage(ImageSource.gallery);
-                          },
-                          icon: const Icon(Icons.photo_album),
-                          label: const Text('Open Gallery'),
-                        ),
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
+
           ],
         ),
       ),
@@ -291,13 +310,13 @@ class _AddProductPageState extends State<AddProductPage> {
     final pickedImage = await ImagePicker().pickImage(source: imageSource, imageQuality: 70,);
     if(pickedImage != null) {
       setState(() {
-        thumbnailImageUrl = pickedImage.path;
+        thumbnailImageLocalPath = pickedImage.path;
       });
     }
   }
 
   void _saveProduct() async {
-    if(thumbnailImageUrl == null) {
+    if(thumbnailImageLocalPath == null) {
       showMsg(context, 'Please select a product image');
       return;
     }
@@ -308,7 +327,45 @@ class _AddProductPageState extends State<AddProductPage> {
     }
 
     if(_formKey.currentState!.validate()) {
-      EasyLoading.show(status: 'Please wait');
+      String? downloadUrl;
+      EasyLoading.show(status: 'Please wait', dismissOnTap: false);
+      try {
+        downloadUrl = await _productProvider.uploadImage(thumbnailImageLocalPath!);
+        final productModel = ProductModel(
+          productName: _nameController.text,
+          shortDescription: _shortDescriptionController.text.isEmpty ? null : _shortDescriptionController.text,
+          longDescription: _longDescriptionController.text.isEmpty ? null : _longDescriptionController.text,
+          category: categoryModel!,
+          productDiscount: num.parse(_discountController.text),
+          salePrice: num.parse(_salePriceController.text),
+          stock: num.parse(_quantityController.text),
+          thumbnailImageUrl: downloadUrl,
+        );
+        final purchaseModel = PurchaseModel(
+            purchaseQuantity: num.parse(_quantityController.text),
+            purchasePrice: num.parse(_purchasePriceController.text),
+            dateModel: DateModel(
+              timestamp: Timestamp.fromDate(purchaseDate!),
+              day: purchaseDate!.day,
+              month: purchaseDate!.month,
+              year: purchaseDate!.year,
+            )
+        );
+        await _productProvider.addNewProduct(productModel, purchaseModel);
+        EasyLoading.dismiss();
+        if(mounted) {
+          showMsg(context, 'Saved');
+        }
+        _resetFields();
+
+      } catch (error) {
+        if(downloadUrl != null) {
+          await _productProvider.deleteImage(downloadUrl);
+        }
+        showMsg(context, 'Something went wrong');
+        EasyLoading.dismiss();
+        print(error.toString());
+      }
     }
   }
 
@@ -323,5 +380,20 @@ class _AddProductPageState extends State<AddProductPage> {
     _salePriceController.dispose();
     subscription.cancel();
     super.dispose();
+  }
+
+  void _resetFields() {
+    setState(() {
+      _nameController.clear();
+      _shortDescriptionController.clear();
+      _longDescriptionController.clear();
+      _purchasePriceController.clear();
+      _quantityController.clear();
+      _discountController.clear();
+      _salePriceController.clear();
+      categoryModel = null;
+      purchaseDate = null;
+      thumbnailImageLocalPath = null;
+    });
   }
 }

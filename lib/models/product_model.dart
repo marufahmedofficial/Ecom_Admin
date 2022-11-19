@@ -8,6 +8,7 @@ const String productFieldShortDescription = 'shortDescription';
 const String productFieldLongDescription = 'LongDescription';
 const String productFieldSalePrice = 'salePrice';
 const String productFieldStock = 'stock';
+const String productFieldAvgRating = 'avgRating';
 const String productFieldDiscount = 'discount';
 const String productFieldThumbnail = 'thumbnail';
 const String productFieldImages = 'images';
@@ -22,6 +23,7 @@ class ProductModel {
   String? longDescription;
   num salePrice;
   num stock;
+  num avgRating;
   num productDiscount;
   String thumbnailImageUrl;
   List<String>? additionalImages;
@@ -37,6 +39,7 @@ class ProductModel {
         required this.salePrice,
         required this.stock,
         this.productDiscount = 0,
+        this.avgRating = 0.0,
         required this.thumbnailImageUrl,
         this.additionalImages,
         this.available = true,
@@ -52,6 +55,7 @@ class ProductModel {
       productFieldDiscount : productDiscount,
       productFieldSalePrice : salePrice,
       productFieldStock : stock,
+      productFieldAvgRating : avgRating,
       productFieldThumbnail : thumbnailImageUrl,
       productFieldImages : additionalImages,
       productFieldAvailable : available,
@@ -67,6 +71,7 @@ class ProductModel {
     longDescription: map[productFieldLongDescription],
     salePrice: map[productFieldSalePrice],
     stock: map[productFieldStock],
+    avgRating: map[productFieldAvgRating],
     productDiscount: map[productFieldDiscount],
     thumbnailImageUrl: map[productFieldThumbnail],
     additionalImages: map[productFieldImages] != null ?
