@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class ImageHolderView extends StatelessWidget {
   final Widget child;
   final String url;
-  final Function(String) onImagePressed;
+  final VoidCallback onImagePressed;
   const ImageHolderView({Key? key, required this.child, this.url = '', required this.onImagePressed}) : super(key: key);
 
   @override
@@ -15,18 +15,16 @@ class ImageHolderView extends StatelessWidget {
       height: 80,
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey, width: 1.5)
+          border: Border.all(color: Colors.grey, width: 1.5)
       ),
       child: url.isEmpty ? child :
       InkWell(
-        onTap: () {
-          onImagePressed(url);
-        },
+        onTap: onImagePressed,
         child: CachedNetworkImage(
           fit: BoxFit.cover,
           imageUrl: url,
           placeholder: (context, url) =>
-              const Center(child: CircularProgressIndicator()),
+          const Center(child: CircularProgressIndicator()),
           errorWidget: (context, url, error) => const Icon(Icons.error),
         ),
       ),

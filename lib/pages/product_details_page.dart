@@ -54,8 +54,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ImageHolderView(
-                  onImagePressed: (url) {
-                    _showImageOnDialog(url);
+                  onImagePressed: () {
+                    _showImageOnDialog(0);
                   },
                   url: productModel.additionalImages[0],
                   child: IconButton(
@@ -68,8 +68,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ),
                 ),
                 ImageHolderView(
-                  onImagePressed: (url) {
-
+                  onImagePressed: () {
+                    _showImageOnDialog(1);
                   },
                   url: productModel.additionalImages[1],
                   child: IconButton(
@@ -82,8 +82,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                   ),
                 ),
                 ImageHolderView(
-                  onImagePressed: (url) {
-
+                  onImagePressed: () {
+                    _showImageOnDialog(2);
                   },
                   url: productModel.additionalImages[2],
                   child: IconButton(
@@ -205,5 +205,45 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     }
   }
 
-  void _showImageOnDialog(String url) {}
+  void _showImageOnDialog(int index) {
+    final url = productModel.additionalImages[index];
+    showDialog(context: context, builder: (context) => AlertDialog(
+      content: CachedNetworkImage(
+        fit: BoxFit.contain,
+        height: MediaQuery.of(context).size.height / 2,
+        imageUrl: url,
+        placeholder: (context, url) =>
+        const Center(child: CircularProgressIndicator()),
+        errorWidget: (context, url, error) => const Icon(Icons.error),
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.close),
+        ),
+        IconButton(
+          onPressed: () async {
+            Navigator.pop(context);
+            EasyLoading.show(status: 'Deleting...');
+            try {
+              await productProvider.deleteImage(url);
+              setState(() {
+                productModel.additionalImages[index] = '';
+              });
+              await productProvider.updateProductField(
+                productModel.productId!,
+                productFieldImages,
+                productModel.additionalImages,);
+              EasyLoading.dismiss();
+            } catch(error) {
+              EasyLoading.dismiss();
+            }
+          },
+          icon: const Icon(Icons.delete),
+        ),
+      ],
+    ));
+  }
 }

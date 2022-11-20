@@ -69,6 +69,17 @@ class _LoginPageState extends State<LoginPage> {
                 onPressed: _authenticate,
                 child: const Text('Login as Admin'),
               ),
+              Row(
+                children: [
+                  const Text('Forgot password', style: TextStyle(fontSize: 18, color: Colors.red),),
+                  TextButton(
+                    onPressed: () {
+                      AuthService.forgotPassword();
+                    },
+                    child: const Text('Click Here'),
+                  ),
+                ],
+              ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Text(_errMsg, style: const TextStyle(fontSize: 18, color: Colors.red),),

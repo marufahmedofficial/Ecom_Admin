@@ -14,6 +14,7 @@ import 'package:untitled/pages/report_page.dart';
 import 'package:untitled/pages/settings_page.dart';
 import 'package:untitled/pages/user_list_page.dart';
 import 'package:untitled/pages/view_product_page.dart';
+import 'package:untitled/providers/order_provider.dart';
 
 import 'providers/product_provider.dart';
 
@@ -23,6 +24,7 @@ void main() async {
   runApp(MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ProductProvider()),
+        ChangeNotifierProvider(create: (_) => OrderProvider())
       ],
       child: const MyApp()));
 }
