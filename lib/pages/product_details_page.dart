@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled/pages/product_repurchase_page.dart';
 import '../customwidgets/image_holder_view.dart';
 import '../models/product_model.dart';
 import '../providers/product_provider.dart';
 import '../utils/constants.dart';
 import '../utils/helper_functions.dart';
+import 'product_repurchase_page.dart';
 
 class ProductDetailsPage extends StatefulWidget {
   static const String routeName = '/productdetails';

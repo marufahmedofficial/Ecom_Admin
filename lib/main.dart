@@ -2,20 +2,20 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled/pages/add_product_page.dart';
-import 'package:untitled/pages/category_page.dart';
-import 'package:untitled/pages/dashboard_page.dart';
-import 'package:untitled/pages/launcher_page.dart';
-import 'package:untitled/pages/login_page.dart';
-import 'package:untitled/pages/order_page.dart';
-import 'package:untitled/pages/product_details_page.dart';
-import 'package:untitled/pages/product_repurchase_page.dart';
-import 'package:untitled/pages/report_page.dart';
-import 'package:untitled/pages/settings_page.dart';
-import 'package:untitled/pages/user_list_page.dart';
-import 'package:untitled/pages/view_product_page.dart';
-import 'package:untitled/providers/order_provider.dart';
 
+import 'pages/add_product_page.dart';
+import 'pages/category_page.dart';
+import 'pages/dashboard_page.dart';
+import 'pages/launcher_page.dart';
+import 'pages/login_page.dart';
+import 'pages/order_page.dart';
+import 'pages/product_details_page.dart';
+import 'pages/product_repurchase_page.dart';
+import 'pages/report_page.dart';
+import 'pages/settings_page.dart';
+import 'pages/user_list_page.dart';
+import 'pages/view_product_page.dart';
+import 'providers/order_provider.dart';
 import 'providers/product_provider.dart';
 
 void main() async {
@@ -37,7 +37,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Flutter Demo',
+      title: 'Ecom Admin',
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),

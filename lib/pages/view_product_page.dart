@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:untitled/pages/product_details_page.dart';
-
 import '../models/category_model.dart';
 import '../providers/product_provider.dart';
+import 'product_details_page.dart';
 
 class ViewProductPage extends StatefulWidget {
   static const String routeName = '/viewproduct';
