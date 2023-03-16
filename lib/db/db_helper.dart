@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/category_model.dart';
+import '../models/notification_model.dart';
 import '../models/order_constant_model.dart';
 import '../models/order_model.dart';
 import '../models/product_model.dart';

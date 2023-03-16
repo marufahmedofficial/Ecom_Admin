@@ -4,8 +4,10 @@ import 'package:provider/provider.dart';
 import '../auth/authservice.dart';
 import '../customwidgets/dashboard_item_view.dart';
 import '../models/dashbord_model.dart';
+import '../providers/notification_provider.dart';
 import '../providers/order_provider.dart';
 import '../providers/product_provider.dart';
+import '../providers/user_provider.dart';
 import 'launcher_page.dart';
 
 class DashboardPage extends StatelessWidget {
@@ -19,6 +21,10 @@ class DashboardPage extends StatelessWidget {
     Provider.of<ProductProvider>(context, listen: false).getAllProducts();
     Provider.of<ProductProvider>(context, listen: false).getAllPurchase();
     Provider.of<OrderProvider>(context, listen: false).getOrderConstants();
+    Provider.of<OrderProvider>(context, listen: false).getOrders();
+    Provider.of<UserProvider>(context, listen: false).getAllUsers();
+    Provider.of<NotificationProvider>(context, listen: false)
+        .getAllNotifications();
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
@@ -26,7 +32,8 @@ class DashboardPage extends StatelessWidget {
           IconButton(
             onPressed: () {
               AuthService.logout().then((value) =>
-                  Navigator.pushReplacementNamed(context, LauncherPage.routeName));
+                  Navigator.pushReplacementNamed(
+                      context, LauncherPage.routeName));
             },
             icon: const Icon(Icons.logout),
           ),
@@ -38,8 +45,9 @@ class DashboardPage extends StatelessWidget {
           //childAspectRatio: 1.0,
         ),
         itemCount: dashboardModelList.length,
-        itemBuilder: (context, index) =>
-            DashboardItemView(model: dashboardModelList[index],),
+        itemBuilder: (context, index) => DashboardItemView(
+          model: dashboardModelList[index],
+        ),
       ),
     );
   }
