@@ -11,9 +11,9 @@ class AddressModel {
 
   AddressModel(
       {required this.addressLine1,
-      this.addressLine2,
-      required this.city,
-      required this.zipcode});
+        this.addressLine2,
+        required this.city,
+        required this.zipcode});
 
   Map<String, dynamic> toMap() {
     return <String, dynamic>{
@@ -25,9 +25,9 @@ class AddressModel {
   }
 
   factory AddressModel.fromMap(Map<String, dynamic> map) => AddressModel(
-        addressLine1: map[addressFieldAddressLine1],
-        addressLine2: map[addressFieldAddressLine2],
-        city: map[addressFieldCity],
-        zipcode: map[addressFieldZipcode],
-      );
+    addressLine1: map[addressFieldAddressLine1],
+    addressLine2: map[addressFieldAddressLine2],
+    city: map[addressFieldCity] ?? 'Not found',
+    zipcode: map[addressFieldZipcode],
+  );
 }
