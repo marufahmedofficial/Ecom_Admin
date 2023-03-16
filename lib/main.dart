@@ -1,3 +1,5 @@
+import 'package:Ecom_Admin/pages/notification_page.dart';
+import 'package:Ecom_Admin/pages/order_details_Page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -52,6 +54,8 @@ class MyApp extends StatelessWidget {
         CategoryPage.routeName: (_) => const CategoryPage(),
         ProductRepurchasePage.routeName: (_) => const ProductRepurchasePage(),
         OrderPage.routeName: (_) => const OrderPage(),
+        OrderDetailsPage.routeName: (_) => const OrderDetailsPage(),
+        NotificationPage.routeName: (_) => const NotificationPage(),
         UserListPage.routeName: (_) => const UserListPage(),
         ReportPage.routeName: (_) => const ReportPage(),
         SettingsPage.routeName: (_) => const SettingsPage(),
