@@ -1,5 +1,6 @@
 import '../pages/add_product_page.dart';
 import '../pages/category_page.dart';
+import '../pages/notification_page.dart';
 import '../pages/order_page.dart';
 import '../pages/report_page.dart';
 import '../pages/settings_page.dart';
@@ -21,31 +22,35 @@ class DashboardModel {
 
 const List<DashboardModel> dashboardModelList = [
   DashboardModel(
-      title: "Add Product",
+      title: 'Add Product',
       iconData: Icons.add,
       routeName: AddProductPage.routeName),
   DashboardModel(
-      title: "View Product",
+      title: 'View Product',
       iconData: Icons.card_giftcard,
       routeName: ViewProductPage.routeName),
   DashboardModel(
-      title: "Categories",
+      title: 'Categories',
       iconData: Icons.category,
       routeName: CategoryPage.routeName),
   DashboardModel(
-      title: "Orders",
+      title: 'Orders',
       iconData: Icons.monetization_on,
       routeName: OrderPage.routeName),
   DashboardModel(
-      title: "Users",
+      title: 'Users',
       iconData: Icons.person,
       routeName: UserListPage.routeName),
   DashboardModel(
-      title: "Settings",
+      title: 'Settings',
       iconData: Icons.settings,
       routeName: SettingsPage.routeName),
   DashboardModel(
-      title: "Report",
+      title: 'Report',
       iconData: Icons.pie_chart,
       routeName: ReportPage.routeName),
+  DashboardModel(
+      title: 'Notification',
+      iconData: Icons.notification_important,
+      routeName: NotificationPage.routeName),
 ];
