@@ -38,6 +38,7 @@ dependencies:
   firebase_auth:
   cloud_firestore:
   firebase_storage:
+  http:
   provider:
   intl:
   image_picker:
