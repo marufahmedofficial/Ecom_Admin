@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -11,7 +10,7 @@ import '../providers/product_provider.dart';
 import '../utils/constants.dart';
 import '../utils/helper_functions.dart';
 import 'product_repurchase_page.dart';
-
+import 'package:http/http.dart' as http;
 class ProductDetailsPage extends StatefulWidget {
   static const String routeName = '/productdetails';
 
@@ -24,6 +23,7 @@ class ProductDetailsPage extends StatefulWidget {
 class _ProductDetailsPageState extends State<ProductDetailsPage> {
   late ProductModel productModel;
   late ProductProvider productProvider;
+
 
   @override
   void didChangeDependencies() {
