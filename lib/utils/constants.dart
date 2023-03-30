@@ -1,4 +1,6 @@
 const String currencySymbol = '৳';
+//eta amar...don't use, use ur own key
+const serverKey = 'AAAAbhC8-yI:APA91bE6HRRfa_k8RSO0Z5_ZpNKLAXNflKTycSt8AOTLO-Yzf7_6GRSFMmNx4VY8C_yymQPKeuDITlimy83ft0n0Occ2aGWe9NL6lSpABrCm3atk26qm2lJCjxmcMu2aEydXheshpcRu';
 const cities = [
   'Dhaka',
   'Chittagong',

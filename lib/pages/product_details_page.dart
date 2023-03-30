@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:http/http.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -26,10 +28,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
   @override
   void didChangeDependencies() {
     productProvider = Provider.of<ProductProvider>(context, listen: false);
-    productModel = ModalRoute
-        .of(context)!
-        .settings
-        .arguments as ProductModel;
+    productModel = ModalRoute.of(context)!.settings.arguments as ProductModel;
     super.didChangeDependencies();
   }
 
@@ -62,9 +61,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     onPressed: () {
                       _addImage(0);
                     },
-                    icon: Icon(Icons.add, color: Theme
-                        .of(context)
-                        .primaryColor,),
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
                 ImageHolderView(
@@ -76,9 +76,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     onPressed: () {
                       _addImage(1);
                     },
-                    icon: Icon(Icons.add, color: Theme
-                        .of(context)
-                        .primaryColor,),
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
                 ImageHolderView(
@@ -90,9 +91,10 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                     onPressed: () {
                       _addImage(2);
                     },
-                    icon: Icon(Icons.add, color: Theme
-                        .of(context)
-                        .primaryColor,),
+                    icon: Icon(
+                      Icons.add,
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
               ],
@@ -102,12 +104,11 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               OutlinedButton(
-                onPressed: () =>
-                    Navigator.pushNamed(
-                      context,
-                      ProductRepurchasePage.routeName,
-                      arguments: productModel,
-                    ),
+                onPressed: () => Navigator.pushNamed(
+                  context,
+                  ProductRepurchasePage.routeName,
+                  arguments: productModel,
+                ),
                 child: const Text('Re-Purchase'),
               ),
               OutlinedButton(
@@ -130,8 +131,7 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               setState(() {
                 productModel.available = !productModel.available;
               });
-              productProvider.updateProductField(
-                  productModel.productId!,
+              productProvider.updateProductField(productModel.productId!,
                   productFieldAvailable, productModel.available);
             },
             title: const Text('Available'),
@@ -142,12 +142,15 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
               setState(() {
                 productModel.featured = !productModel.featured;
               });
-              productProvider.updateProductField(
-                  productModel.productId!,
+              productProvider.updateProductField(productModel.productId!,
                   productFieldFeatured, productModel.featured);
             },
             title: const Text('Featured'),
           ),
+          OutlinedButton(
+            onPressed: _notifyUser,
+            child: const Text('Notify Users'),
+          )
         ],
       ),
     );
@@ -157,8 +160,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
     showModalBottomSheet(
         context: context,
         builder: (context) {
-          final purchaseList = productProvider.getPurchaseByProductId(
-              productModel.productId!);
+          final purchaseList =
+          productProvider.getPurchaseByProductId(productModel.productId!);
           return Container(
             margin: const EdgeInsets.all(20),
             child: ListView.builder(
@@ -169,8 +172,8 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
                 return ListTile(
                   title: Text(getFormattedDate(
                       purchaseModel.dateModel.timestamp.toDate())),
-                  subtitle: Text(
-                      '$currencySymbol${purchaseModel.purchasePrice}'),
+                  subtitle:
+                  Text('$currencySymbol${purchaseModel.purchasePrice}'),
                   trailing: Text('Qty: ${purchaseModel.purchaseQuantity}'),
                 );
               },
@@ -181,25 +184,29 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   void _addImage(int index) async {
     final selectedFile = await ImagePicker().pickImage(
-      source: ImageSource.gallery, imageQuality: 70,);
+      source: ImageSource.gallery,
+      imageQuality: 70,
+    );
     if (selectedFile != null) {
       EasyLoading.show(status: 'Please wait');
       try {
-        final downloadUrl = await productProvider.uploadImage(
-            selectedFile.path);
+        final downloadUrl =
+        await productProvider.uploadImage(selectedFile.path);
         final previousList = productModel.additionalImages;
         previousList[index] = downloadUrl;
         await productProvider.updateProductField(
-          productModel.productId!, productFieldImages,
-          previousList,);
+          productModel.productId!,
+          productFieldImages,
+          previousList,
+        );
         setState(() {
           productModel.additionalImages[index] = downloadUrl;
         });
         EasyLoading.dismiss();
-        if(mounted) showMsg(context, 'Uploaded Successfully');
+        if (mounted) showMsg(context, 'Uploaded Successfully');
       } catch (error) {
         EasyLoading.dismiss();
-        if(mounted) showMsg(context, 'Upload failed');
+        if (mounted) showMsg(context, 'Upload failed');
         rethrow;
       }
     }
@@ -207,43 +214,72 @@ class _ProductDetailsPageState extends State<ProductDetailsPage> {
 
   void _showImageOnDialog(int index) {
     final url = productModel.additionalImages[index];
-    showDialog(context: context, builder: (context) => AlertDialog(
-      content: CachedNetworkImage(
-        fit: BoxFit.contain,
-        height: MediaQuery.of(context).size.height / 2,
-        imageUrl: url,
-        placeholder: (context, url) =>
-        const Center(child: CircularProgressIndicator()),
-        errorWidget: (context, url, error) => const Icon(Icons.error),
-      ),
-      actions: [
-        IconButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          icon: const Icon(Icons.close),
-        ),
-        IconButton(
-          onPressed: () async {
-            Navigator.pop(context);
-            EasyLoading.show(status: 'Deleting...');
-            try {
-              await productProvider.deleteImage(url);
-              setState(() {
-                productModel.additionalImages[index] = '';
-              });
-              await productProvider.updateProductField(
-                productModel.productId!,
-                productFieldImages,
-                productModel.additionalImages,);
-              EasyLoading.dismiss();
-            } catch(error) {
-              EasyLoading.dismiss();
-            }
-          },
-          icon: const Icon(Icons.delete),
-        ),
-      ],
-    ));
+    showDialog(
+        context: context,
+        builder: (context) => AlertDialog(
+          content: CachedNetworkImage(
+            fit: BoxFit.contain,
+            height: MediaQuery.of(context).size.height / 2,
+            imageUrl: url,
+            placeholder: (context, url) =>
+            const Center(child: CircularProgressIndicator()),
+            errorWidget: (context, url, error) => const Icon(Icons.error),
+          ),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.close),
+            ),
+            IconButton(
+              onPressed: () async {
+                Navigator.pop(context);
+                EasyLoading.show(status: 'Deleting...');
+                try {
+                  await productProvider.deleteImage(url);
+                  setState(() {
+                    productModel.additionalImages[index] = '';
+                  });
+                  await productProvider.updateProductField(
+                    productModel.productId!,
+                    productFieldImages,
+                    productModel.additionalImages,
+                  );
+                  EasyLoading.dismiss();
+                } catch (error) {
+                  EasyLoading.dismiss();
+                }
+              },
+              icon: const Icon(Icons.delete),
+            ),
+          ],
+        ));
+  }
+
+  void _notifyUser() async {
+    final url = 'https://fcm.googleapis.com/fcm/send';
+    final header = {
+      'Content-Type': 'application/json',
+      'Authorization': 'key=$serverKey',
+    };
+    final body = {
+      "to": "/topics/promo",
+      "notification": {
+        "title": "New arrival!!!",
+        "body": "Checkout this new Product ${productModel.productName}"
+      },
+      "data": {"key": "product", "value": productModel.productId}
+    };
+    try {
+      final response = await http.post(
+        Uri.parse(url),
+        headers: header,
+        body: json.encode(body),
+      );
+
+    } catch (error) {
+      print(error.toString());
+    }
   }
 }
